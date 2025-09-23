@@ -1,0 +1,3 @@
+User-agent:
+*Allow:/
+Sitemap: https://hospital-review.onrender.com/sitemap.xml
