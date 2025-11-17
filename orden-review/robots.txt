@@ -1,3 +1,0 @@
-User-agent:
-*Allow:/
-Sitemap: https://orden-review.onrender.com/sitemap.xml
