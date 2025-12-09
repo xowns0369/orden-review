@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4359299133413391"
+     crossorigin="anonymous"></script>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png">
+
+  <meta name="naver-site-verification" content="fb87b54cac318d15ea544395140c81fa65137d2f" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- 기본 메타 -->
+<title>인천 서구·검단 정형외과·치과 후기·평점 한눈에 보기</title>
+<meta name="description" content="인천 서구·검단 지역 정형외과·치과를 실제 방문 후기와 평점으로 비교하고, 내게 맞는 병원을 쉽게 찾으세요.">
+
+<!-- Open Graph -->
+<meta property="og:title" content="인천 서구·검단 정형외과·치과 후기·평점 한눈에 보기">
+<meta property="og:description" content="인천 서구·검단 지역 정형외과·치과를 실제 방문 후기와 평점으로 비교하고, 내게 맞는 병원을 쉽게 찾으세요.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="인천 서구·검단 정형외과·치과 후기·평점 한눈에 보기">
+<meta name="twitter:description" content="인천 서구·검단 지역 정형외과·치과를 실제 방문 후기와 평점으로 비교하고, 내게 맞는 병원을 쉽게 찾으세요.">
+<meta name="twitter:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 20px; padding: 0; }
+    h1 { text-align: center; margin-bottom: 30px; color: #2c3e50; }
+    .container { display: grid; grid-template-columns: repeat(1, 1fr); gap: 20px; max-width: 800px; margin: 0 auto; }
+    @media screen and (min-width: 768px) { .container { grid-template-columns: repeat(2, 1fr); } }
+    .hospital-card { background-color: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; transition: box-shadow 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; }
+    .hospital-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+    .hospital-name { font-size: 1.3rem; font-weight: 700; color: #34495e; margin-bottom: 5px; }
+    .hospital-address { font-size: 0.9rem; color: #7f8c8d; margin-bottom: 12px; min-height: 40px; }
+    .keywords { margin-bottom: 12px; }
+    .tag { display: inline-block; background-color: #3498db; color: #fff; padding: 5px 10px; margin: 3px 5px 3px 0; border-radius: 20px; font-size: 0.85rem; }
+    .rating { font-size: 1rem; color: #e67e22; font-weight: 600; margin-bottom: 12px; }
+    .button-group { display: flex; gap: 10px; }
+    .review-btn, .view-btn { flex: 1; padding: 8px 12px; text-align: center; font-size: 0.85rem; font-weight: 500; text-decoration: none; border-radius: 6px; color: white; transition: background-color 0.3s ease; }
+    .review-btn { background-color: #a1e679; }
+    .review-btn:hover { background-color: #8ac45e; }
+    .view-btn { background-color: #31d146; }
+    .view-btn:hover { background-color: #27ae60; }
+    .btn { display: inline-block; margin: 5px; padding: 8px 16px; border-radius: 20px; background: #ecf0f1; color: #2c3e50; text-decoration: none; font-weight: 600; transition: 0.2s; }
+    .btn:hover { background: #3498db; color: #fff; }
+    .btn.active { background: #2980b9; color: #fff; }
+  </style>
+</head>
+
+<body>
+  <div style="font-size: 13px; position:fixed; top:10px; left:10px; font-weight:bold;">
+    오늘 방문자 수: {{ visit_count }}
+  </div>
+
+  <h1 style="font-size: 25px;">인천 서구 · 검단 정형외과·치과 추천</h1>
+
+  <footer style="
+      margin-top: 50px;
+      padding: 20px;
+      font-size: 15px;
+      color: #363333;
+      line-height: 1.8;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+  ">
+
+    {% if not show_notice %}
+    <div style="padding: 14px;  border-radius:9px; margin-bottom:15px; ">
+        <strong style="font-size: 15px;">업데이트 2025년 12월 1일</strong style="font-size: 13px;"><br>
+        병원 출신 운영자가 의료 현장 경험을 바탕으로 이용에 도움이 되는 리뷰만 선별했습니다.
+    </div>
+    {% endif %}
+
+    {% if show_notice %}
+    <div style="padding: 12px;  border-radius: 10px; margin-bottom: 15px; border:1px none #ffffff;">
+        🟢 리뷰에 상업적 표현이 거의 없습니다.<br>
+        🟠 리뷰에 상업적 표현이 포함되어 있을 수 있습니다. 이용에 참고 바랍니다.
+    </div>
+    {% endif %}
+</footer>
+
+<!-- ✅ 필터 영역 -->
+<div class="filter" style="margin:26px 0; display:flex; flex-direction:column; align-items:center; gap:20px;">
+  <footer>이름으로 찾기</footer>
+  <!-- 첫 번째 검색폼: 병원 이름 검색 -->
+  <form method="get" action="/" class="filter-form first-form" style="display:flex; justify-content:center; align-items:center; gap:10px; border:1px solid #b1b1b1; border-radius:7px; padding:8px; width:100%; max-width:500px; box-sizing:border-box; flex-wrap:wrap;">
+    <label style="font-size:15px;">병원 검색:</label>
+    <input type="text" name="search" placeholder="병원 이름 입력" value="{{ search_query or '' }}" 
+           style="border:1px solid #ccc; border-radius:6px; font-size:15px; flex:1 1 auto; min-width:60px; padding:7px 8px; outline:none;">
+    <button type="submit"
+            style="padding:6px 11px; height:30px; cursor:pointer; background-color:#3498db; color:white; border:none; border-radius:6px;">
+      검색
+    </button>
+  </form>
+   <footer>지역으로 찾기</footer>
+  <!-- 두 번째 검색폼: 진료과 / 구 / 행정동 + 검색 버튼 -->
+  <form method="get" action="/" class="filter-form second-form" style="display:flex; justify-content:center; align-items:center; gap:10px; border:1px solid #b1b1b1; border-radius:7px; padding:8px; width:100%; max-width:600px; box-sizing:border-box; flex-wrap:wrap;">
+
+  <!-- 진료과 -->
+  <select name="category" id="category" style="font-size:17px; padding:6px 8px; flex:1 1 50px; min-width:50px;">
+    <option value="" {% if not selected_category %}selected{% endif %}>전체</option>
+    <option value="정형외과" {% if selected_category == "정형외과" %}selected{% endif %}>정형외과</option>
+    <option value="치과" {% if selected_category == "치과" %}selected{% endif %}>치과</option>
+  </select>
+
+  <!-- 구 -->
+  <select name="gu" id="gu" style="font-size:17px; padding:6px 8px; flex:1 1 40px; min-width:40px;">
+    <option value="" {% if not selected_gu %}selected{% endif %}>전체</option>
+    <option value="서구" {% if selected_gu == "서구" %}selected{% endif %}>서구</option>
+    <option value="검단구" {% if selected_gu == "검단구" %}selected{% endif %}>검단구</option>
+  </select>
+
+  <!-- 행정동 -->
+  <select name="region" id="region" style="font-size:17px; padding:6px 8px; flex:1 1 50px; min-width:50px;">
+    <option value="" {% if not selected_region %}selected{% endif %}>전체</option>
+    {% if selected_gu and region_dict[selected_gu] %}
+      {% for dong in region_dict[selected_gu] %}
+        <option value="{{ dong }}" {% if selected_region == dong %}selected{% endif %}>{{ dong }}</option>
+      {% endfor %}
+    {% endif %}
+  </select>
+
+  <button type="submit" style="padding:6px 11px; height:30px; cursor:pointer; background-color:#3498db; color:white; border:none; border-radius:6px;">검색</button>
+</form>
+
+  <!-- 정렬 버튼: 두 번째 검색폼 바로 아래 -->
+  <div class="sort-buttons" style="display:flex; justify-content:center; align-items:center; gap:6px; width:90%; max-width:600px;">
+    <button id="sort-name"
+            style="padding:7px 11px; background-color:#95a5a6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
+      가나다
+    </button>
+    <button id="sort-rating"
+            style="padding:7px 11px; background-color:#f39c12; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">
+      평점순
+    </button>
+  </div>
+
+</div>
+
+<!-- 반응형 CSS -->
+<style>
+/* 모든 요소에 box-sizing 적용 */
+.filter *, .filter-form * {
+  box-sizing: border-box;
+}
+
+/* 모바일 대응: 화면 500px 이하 */
+@media (max-width: 485px) {
+
+  /* 첫 번째 검색폼 */
+  .filter-form.first-form input,
+  .filter-form.first-form button {
+    min-width:40px !important;
+    padding:4px 6px !important;
+    font-size:14px !important;
+  }
+
+  /* 두 번째 검색폼 */
+  .filter-form.second-form {
+    flex-wrap: wrap !important;  /* 작은 화면에서는 줄바꿈 허용 */
+    gap:5px !important;
+  }
+  .filter-form.second-form select,
+  .filter-form.second-form button {
+    flex:1 1 auto !important;
+    min-width:40px !important;
+    font-size:15px !important;
+    padding:4px 6px !important;
+  }
+
+  /* 정렬 버튼 */
+  .sort-buttons button {
+    padding:6px 8px !important;
+    font-size:13px !important;
+  }
+}
+</style>
+
+
+
+
+
+  <!-- ✅ JS: 구 선택 시 행정동 옵션 변경 및 정렬 -->
+  <script>
+    const regionDict = {{ region_dict|tojson }};
+    const guSelect = document.getElementById("gu");
+    const regionSelect = document.getElementById("region");
+    const selectedRegion = "{{ selected_region|default('') }}";
+
+    guSelect.addEventListener("change", function () {
+      const selectedGu = this.value;
+      regionSelect.innerHTML = '<option value="">전체</option>';
+
+      if (selectedGu && regionDict[selectedGu]) {
+        regionDict[selectedGu].forEach(function (dong) {
+          const option = document.createElement("option");
+          option.value = dong;
+          option.textContent = dong;
+          if (dong === selectedRegion) option.selected = true;
+          regionSelect.appendChild(option);
+        });
+      }
+    });
+
+    // ✅ 정렬 기능
+    document.getElementById("sort-name").addEventListener("click", function(e){
+      e.preventDefault();
+      const url = new URL(window.location.href);
+      url.searchParams.set("sort", "name");
+      window.location.href = url.toString();
+    });
+    document.getElementById("sort-rating").addEventListener("click", function(e){
+      e.preventDefault();
+      const url = new URL(window.location.href);
+      url.searchParams.set("sort", "rating");
+      window.location.href = url.toString();
+    });
+  </script>
+
+<!-- ✅ 병원 카드 리스트 -->
+{% if hospitals|length == 0 %}
+  <div style="text-align:center; margin-top:40px; color:#555; font-size:17px; line-height:1.6;">
+    검색 결과가 없습니다.
+  </div>
+{% else %}
+  <div class="container">
+    {% for hospital in hospitals %}
+      <div class="hospital-card">
+        <div>
+          <div class="hospital-name">{{ hospital.name }}</div>
+          <div class="hospital-address">{{ hospital.address }}</div>
+          <div class="keywords">
+            {% for keyword in hospital.keywords %}
+              <span class="tag">{{ keyword }}</span>
+            {% endfor %}
+          </div>
+          <div class="rating">
+            {% if hospital.rating != "평점 없음" %}
+              평점: {{ hospital.rating }}/10 (리뷰 {{ hospital.review_count }}개)
+            {% else %}
+              평점 없음
+            {% endif %}
+          </div>
+
+          <p>
+            {% if hospital.commercial_level == 1 %}
+              🟢
+            {% elif hospital.commercial_level == 2 %}
+              🟠
+            {% else %}
+              정보 없음
+            {% endif %}
+          </p>
+        </div>
+        <div class="button-group">
+          <a class="view-btn" href="{{ url_for('hospital_detail', hospital_name=hospital.name) }}">👀 리뷰 보기</a>
+
+            <a class="review-btn" href="{{ hospital.website }}" target="_blank">🌐 홈페이지</a>
+         
+          <a class="review-btn"
+            href="https://map.naver.com/p/search/{{ hospital.name | urlencode }}"
+            target="_blank"
+            style="background-color:#2ecc71;">
+            🗺️ 지도 보기
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+  </div>
+
+  <footer style="margin-top: 50px; padding: 20px; background-color: #f0f0f0; font-size: 13px; color: #666; text-align: center; line-height: 1.6;">
+    ※ 본 사이트는 개인 경험 및 사용자 제공 정보를 기반으로 한 정보 정리 플랫폼이며,<br>
+    의료기관의 전문성, 치료 성과 또는 의료진에 대한 직접적인 평가 또는 광고를 포함하지 않습니다.<br>
+    ※ 본 사이트는 의료기관을 직접 추천하거나 연결하는 서비스를 제공하지 않으며,<br>
+    의료기관의 선택은 이용자 본인의 판단과 책임에 따라 이루어져야 합니다.<br>
+  </footer>
+</body>
+</html>
