@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ hospital.name }} - 임닥터 상세 리뷰</title>
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f9f9f9;
+      margin: 10px;
+      line-height: 1.6;
+      padding-bottom: 100px; /* 하단 버튼 공간 확보 */
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* 임닥터 스타일 제목 */
+    .brand-header {
+      line-height: 1.4;
+      margin-bottom: 30px;
+      text-align: center;
+      padding-top: 20px;
+    }
+    .brand-lim {
+      color: #3498db;
+      font-weight: 900;
+      font-size: 42px;
+      vertical-align: middle;
+    }
+    .brand-dr {
+      font-weight: 900;
+      font-size: 32px;
+      vertical-align: middle;
+      color: #2c3e50;
+    }
+    .hospital-title {
+      font-size: 1.3rem;
+      color: #7f8c8d;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    .review {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 18px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-size: 1rem;
+    }
+    .keyword-tag {
+      display: inline-block;
+      background-color: #e8f1fa;
+      color: #3498db;
+      border-radius: 15px;
+      padding: 4px 12px;
+      margin: 5px 4px 0 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .date {
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    /* 플로팅 뒤로가기 버튼 (히스토리 백 기능 포함) */
+    .floating-back-btn {
+      position: fixed;
+      bottom: 40px;
+      right: 25px;
+      background-color: #3498db;
+      color: white;
+      padding: 18px 28px;
+      border-radius: 60px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+    }
+
+    /* 모바일 최적화 크기 조정 */
+    @media (max-width: 600px) {
+      .brand-lim { font-size: 36px; }
+      .brand-dr { font-size: 28px; }
+      .hospital-title { font-size: 1.1rem; }
+      
+      .floating-back-btn {
+        bottom: 20px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 15px;
+        border-radius: 40px;
+      }
+      .floating-back-btn span {
+        font-size: 18px !important;
+        margin-right: 5px !important;
+      }
+      .review { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="javascript:history.back();" class="floating-back-btn">
+    <span style="margin-right: 8px; font-size: 22px;">←</span> 뒤로가기
+  </a>
+
+  <div class="container">
+    <div class="brand-header">
+      <div>
+        <span class="brand-lim">임</span><span class="brand-dr">닥터</span>
+      </div>
+      <div class="hospital-title">{{ hospital.name }} 리뷰 상세</div>
+    </div>
+
+    {% if reviews %}
+      {% for review in reviews %}
+        <div class="review">
+          <p style="margin-top: 0; color: #333; white-space: pre-wrap;">{{ review.content }}</p>
+
+          {% if review.keywords %}
+            <div style="margin-top: 10px;">
+              {% for kw in review.keywords %}
+                <span class="keyword-tag"># {{ kw }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="date">방문일: {{ review.date }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="review" style="text-align: center; color: #7f8c8d; padding: 40px;">
+        아직 등록된 상세 리뷰가 없습니다.
+      </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+        <a href="javascript:history.back();" style="color: #95a5a6; text-decoration: underline; font-size: 0.95rem;">이전 화면으로 돌아가기</a>
+    </div>
+  </div>
+</body>
+</html>
