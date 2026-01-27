@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>임닥터 - 문진 결과 분석</title>
+    <style>
+        /* 사용자님의 스타일 100% 유지 */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; margin: 20px; }
+        h1, h2 { text-align: center; color: #2c3e50; font-size: 25px; }
+        
+        .result-summary { max-width: 800px; margin: 0 auto 30px; background: #fff; padding: 20px; border-radius: 12px; border-left: 5px solid #3498db; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        .container { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 800px; margin: 0 auto; }
+        @media (min-width: 768px) { .container { grid-template-columns: repeat(2, 1fr); } }
+
+        .hospital-card { background-color: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: box-shadow 0.3s ease; }
+        .hospital-card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+        .hospital-name { display: flex; align-items: center; gap: 6px; font-size: 1.3rem; font-weight: 700; color: #34495e; margin-bottom: 6px; flex-wrap: wrap; }
+        .joint-icon { width: 30px; height: 30px; }
+        
+        .hospital-address { font-size: 0.95rem; color: #7f8c8d; margin-bottom: 12px; min-height: 40px; line-height: 1.4; }
+        .region-tag { font-weight: bold; color: #2980b9; margin-right: 5px; }
+
+        .tag { display: inline-block; background-color: #3498db; color: #fff; padding: 5px 10px; margin: 3px 5px 3px 0; border-radius: 20px; font-size: 0.85rem; }
+        .rating { font-size: 1rem; color: #e67e22; font-weight: 600; margin-bottom: 10px; }
+        
+        .button-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .view-btn, .review-btn { flex: 1; padding: 8px 12px; text-align: center; font-size: 0.85rem; font-weight: 500; text-decoration: none; border-radius: 6px; color: white; min-width: 80px; }
+        .view-btn { background-color: #31d146; }
+        .review-btn { background-color: #2ecc71; }
+
+        .match-info-header {
+            background-color: #ebf5ff;
+            color: #0056b3;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            border: 1px dashed #3498db;
+            text-align: center;
+        }
+
+        .exercise-box { background: #e3f2fd; border-radius: 12px; padding: 20px; margin-bottom: 30px; border: 1px solid #bbdefb; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .home-btn { display: block; width: 220px; margin: 40px auto; padding: 15px; background: #95a5a6; color: white; text-align: center; text-decoration: none; border-radius: 10px; font-weight: bold; }
+        
+        .color-notice { max-width: 800px; margin: 20px auto; padding: 15px; background: #f0f0f0; border-radius: 10px; font-size: 13px; color: #666; text-align: center; line-height: 1.6; }
+
+        .exercise-comment-text {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            font-size: 15px;
+            color: #34495e;
+            margin-top: 15px;
+        }
+
+        .exercise-box h3 {
+            border-bottom: 2px solid #bbdefb;
+            padding-bottom: 10px;
+            color: #1976d2;
+        }
+
+        /* 우측 하단 고정 뒤로가기 버튼 */
+        .floating-back-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 25px;
+            background-color: #3498db;
+            color: white;
+            padding: 18px 28px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .floating-back-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        @media (max-width: 600px) {
+            .floating-back-btn {
+            bottom: 20px;
+            right: 15px;
+            padding: 10px 18px;
+            font-size: 14px;
+            border-radius: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="line-height: 1.4; margin-bottom: 35px; text-align: center;">
+    <div style="margin-bottom: 8px;">
+        <span style="color:#3498db; font-weight: 900; font-size: 42px; vertical-align: middle;">임</span><span style="font-weight: 900; font-size: 32px; vertical-align: middle; color: #2c3e50;">닥터</span>
+    </div>
+    <div style="font-size: 20px; color: #34495e; font-weight: bold;">
+        🔍 맞춤 문진 결과 분석
+    </div>
+</h1>
+
+<hr style="border: 0; height: 1px; background: #eee; margin-bottom: 30px;">
+
+    <div class="exercise-box">
+    <h3 style="margin-top:0;">🧘 {{ user_data.parts|join(', ') }} 생활 가이드라인 안내</h3>
+    <p style="color: #7f8c8d; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">{{ job_common_tip }}</p>
+
+    <details id="guide-details" style="border: 1px solid #bbdefb; border-radius: 8px; background: #fff;">
+        <summary id="summary-text" style="cursor: pointer; padding: 12px; font-weight: bold; color: #1976d2; text-align: center; outline: none; list-style: none;">
+            ▼ 생활 가이드라인 펼치기
+        </summary>
+        
+        <div style="padding: 10px 15px; border-top: 1px solid #eee;">
+            {% for item in analysis_results %}
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 800; color: #3498db; margin-bottom: 8px; font-size: 16px;">
+                    [ {{ item.part }} ]
+                </div>
+                <div class="exercise-comment-text" style="margin-top: 0; padding-left: 5px;">
+                    {{ item.comment }}
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if duration_tip %}
+            <div style="margin-top: 15px; padding: 12px; background: #fff9f0; border-radius: 6px; border-left: 4px solid #e67e22;">
+                <span style="color: #d35400; font-size: 14px; font-weight: bold;">
+                    🚩 {{ user_data.duration }} 통증: {{ duration_tip }}
+                </span>
+            </div>
+            {% endif %}
+        </div>
+    </details>
+
+    {% if not video_url %}
+    <p style="text-align: center; color: #95a5a6; font-size: 12px; margin-top: 15px; margin-bottom: 0;">
+        ※ 맞춤 운동 영상은 현재 준비 중입니다.
+    </p>
+    {% endif %}
+</div>
+
+<script>
+    const details = document.getElementById('guide-details');
+    const summaryText = document.getElementById('summary-text');
+
+    details.addEventListener('toggle', () => {
+        if (details.open) {
+            summaryText.textContent = '▲ 생활 가이드라인 접기';
+        } else {
+            summaryText.textContent = '▼ 생활 가이드라인 펼치기';
+        }
+    });
+</script>
+    </details>
+</div>
+
+    <div style="text-align: center; margin: 40px 0 30px 0;">
+    <div style="font-size: 22px; color: #2c3e50; font-weight: 800; letter-spacing: -1px; margin-bottom: 15px;">
+        <span style="color: #3498db; margin-right: 5px;">{{ user_data.parts|join(', ') }}</span> 관련 리뷰
+    </div>
+
+    <div style="display: inline-flex; align-items: center; background-color: #f8f9fa; padding: 8px 16px; border-radius: 30px; border: 1px solid #f1f3f5;">
+        <div style="font-size: 15px; color: #636e72; font-weight: 500;">
+            <span style="color: #2ecc71; margin-right: 4px;">●</span> 리뷰에 상업적 표현 적음
+            <span style="margin: 0 12px; color: #dee2e6;">|</span>
+            <span style="color: #ff6200; margin-right: 4px;">●</span> 상업적 표현 포함가능
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        {% if hospitals %}
+            {% for hospital in hospitals %}
+                <div class="hospital-card">
+                    <div>
+                        <div class="match-info-header">
+                            📢 {{ hospital.match_message }}
+                        </div>
+
+                        <div class="hospital-name">
+                            <span>{{ hospital.name }}</span>
+                            {% if hospital.specialty %}
+                                {% for s in hospital.specialty %}
+                                    {% if s == 1 %}<img src="{{ url_for('static', filename='icons/hip.png') }}" class="joint-icon" title="고관절">
+                                    {% elif s == 2 %}<img src="{{ url_for('static', filename='icons/knee.png') }}" class="joint-icon" title="무릎">
+                                    {% elif s == 3 %}<img src="{{ url_for('static', filename='icons/spine.png') }}" class="joint-icon" title="척추">
+                                    {% elif s == 4 %}<img src="{{ url_for('static', filename='icons/shoulder.png') }}" class="joint-icon" title="어깨">{% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <div class="hospital-address">
+                            <span class="region-tag">[{{ hospital.region }}]</span>
+                            {{ hospital.address }}
+                        </div>
+
+                        <div class="keywords">
+                            {% for keyword in hospital.keywords %}
+                                <span class="tag">{{ keyword }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="rating">
+                            {% if hospital.rating and hospital.rating != '평점 없음' %}
+                                평점: {{ hospital.rating }}/10 (리뷰 {{ hospital.review_count if hospital.review_count else '정보없음' }}개)
+                            {% else %}
+                                평점 없음
+                            {% endif %}
+                        </div>
+
+                        <p style="margin: 5px 0 0 0;">
+                            {% if hospital.commercial_level == 1 %}🟢
+                            {% elif hospital.commercial_level == 2 %}🟠
+                            {% else %}정보 없음{% endif %}
+                        </p>
+                    </div>
+
+                    <div class="button-group">
+                        <a class="view-btn" href="{{ url_for('hospital_detail', hospital_name=hospital.name) }}">👀 리뷰 보기</a>
+                        <a class="review-btn" href="{{ hospital.website }}" target="_blank">🌐 홈페이지</a>
+                        <a class="review-btn" href="https://map.naver.com/p/search/{{ hospital.name | urlencode }}" target="_blank">🗺️ 지도 보기</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px; color: #666; background: #fff; border-radius: 12px;">
+                현재 해당 지역 내에 '{{ user_data.parts|join(", ") }}' 관련 키워드가 포함된 리뷰를 보유한 병원이 없습니다. <br>
+                메인 페이지의 직접 검색을 통해 다른 병원을 찾아보세요.
+            </div>
+        {% endif %}
+    </div>
+
+    <a href="/" class="floating-back-btn">
+        ← 뒤로가기
+    </a>
+
+    <footer style="margin-top: 30px; padding: 20px; background-color: #f0f0f0; font-size: 13px; color: #666; text-align: center; line-height: 1.6;">
+        ※ 본 사이트는 개인 경험 및 사용자 제공 정보를 기반으로 한 정보 정리 플랫폼이며,<br>
+        의료기관의 전문성, 치료 성과 또는 의료진에 대한 직접적인 평가를 포함하지 않습니다.
+    </footer>
+
+</body>
+</html>
