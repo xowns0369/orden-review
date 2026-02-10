@@ -1,0 +1,104 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  margin: 20px;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hospital-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hospital-card:hover {
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.hospital-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #34495e;
+  margin-bottom: 5px;
+}
+
+.hospital-address {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 12px;
+  min-height: 40px;
+}
+
+.keywords {
+  margin-bottom: 12px;
+}
+
+.tag {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  padding: 5px 10px;
+  margin: 3px 5px 3px 0;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.rating {
+  font-size: 1rem;
+  color: #e67e22;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.review-btn, .view-btn {
+  flex: 1;
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 6px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.review-btn {
+  background-color: #a1e679;
+}
+
+.review-btn:hover {
+  background-color: #8ac45e;
+}
+
+.view-btn {
+  background-color: #58b8ff;
+}
+
+.view-btn:hover {
+  background-color: #409fdc;
+}
