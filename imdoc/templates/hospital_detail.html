@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ hospital.name }} - 임닥터 상세 리뷰</title>
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f9f9f9;
+      margin: 10px;
+      line-height: 1.6;
+      padding-bottom: 100px; /* 하단 버튼 공간 확보 */
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    /* 임닥터 스타일 제목 */
+    .brand-header {
+      line-height: 1.4;
+      margin-bottom: 30px;
+      text-align: center;
+      padding-top: 20px;
+    }
+    .brand-lim {
+      color: #3498db;
+      font-weight: 900;
+      font-size: 42px;
+      vertical-align: middle;
+    }
+    .brand-dr {
+      font-weight: 900;
+      font-size: 32px;
+      vertical-align: middle;
+      color: #2c3e50;
+    }
+    .hospital-title {
+      font-size: 1.3rem;
+      color: #7f8c8d;
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    .review {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 18px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-size: 1rem;
+    }
+    .keyword-tag {
+      display: inline-block;
+      background-color: #e8f1fa;
+      color: #3498db;
+      border-radius: 15px;
+      padding: 4px 12px;
+      margin: 5px 4px 0 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .date {
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 12px;
+      text-align: right;
+    }
+
+    /* 플로팅 뒤로가기 버튼 (히스토리 백 기능 포함) */
+    .floating-back-btn {
+      position: fixed;
+      bottom: 40px;
+      right: 25px;
+      background-color: #3498db;
+      color: white;
+      padding: 18px 28px;
+      border-radius: 60px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+    }
+
+    /* 모바일 최적화 크기 조정 */
+    @media (max-width: 600px) {
+      .brand-lim { font-size: 36px; }
+      .brand-dr { font-size: 28px; }
+      .hospital-title { font-size: 1.1rem; }
+      
+      .floating-back-btn {
+        bottom: 20px;
+        right: 15px;
+        padding: 12px 20px;
+        font-size: 15px;
+        border-radius: 40px;
+      }
+      .floating-back-btn span {
+        font-size: 18px !important;
+        margin-right: 5px !important;
+      }
+      .review { padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="javascript:history.back();" class="floating-back-btn">
+    <span style="margin-right: 8px; font-size: 22px;">←</span> 뒤로가기
+  </a>
+
+  <div class="container">
+    <div class="brand-header">
+      <div>
+        <span class="brand-lim">임</span><span class="brand-dr">닥터</span>
+      </div>
+      <div class="hospital-title">{{ hospital.name }} 리뷰 상세</div>
+    </div>
+
+    {% if reviews %}
+      {% for review in reviews %}
+        <div class="review">
+          <p style="margin-top: 0; color: #333; white-space: pre-wrap;">{{ review.content }}</p>
+
+          {% if review.keywords %}
+            <div style="margin-top: 10px;">
+              {% for kw in review.keywords %}
+                <span class="keyword-tag"># {{ kw }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="date">방문일: {{ review.date }}</div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="review" style="text-align: center; color: #7f8c8d; padding: 40px;">
+        아직 등록된 상세 리뷰가 없습니다.
+      </div>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 30px; margin-bottom: 50px;">
+        <a href="javascript:history.back();" style="color: #95a5a6; text-decoration: underline; font-size: 0.95rem;">이전 화면으로 돌아가기</a>
+    </div>
+  </div>
+<div id="floating-share-btn" onclick="shareLink()" style="
+      position: fixed;
+      top: 20px;       /* 우측 상단 위치 */
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      background-color: #ffffff;
+      border: 2px solid #3498db;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10001; /* 방문자 수 표시(1000)보다 위에 오도록 설정 */
+      transition: all 0.2s ease;
+  ">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="#3498db">
+  <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"></path>
+</svg>
+  </div>
+
+  <style>
+      #floating-share-btn:active {
+          transform: scale(0.9);
+      }
+      /* 모바일 대응: 상단 여백 살짝 조정 */
+      @media (max-width: 600px) {
+          #floating-share-btn {
+              top: 15px;
+              right: 15px;
+              width: 42px;
+              height: 42px;
+          }
+      }
+  </style>
+
+  <script>
+    function shareLink() {
+        const shareData = {
+            title: '임닥터 - 인천 서구·검단 병원 후기',
+            text: '광고 없는 진짜 병원 리뷰 키워드 확인! 서구 병원 찾을 때 필수예요. 🏥',
+            url: window.location.href, 
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData)
+                .then(() => console.log('공유 성공'))
+                .catch((error) => console.log('공유 실패', error));
+        } else {
+            const tempInput = document.createElement("input");
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand("copy");
+                alert("링크가 복사되었습니다! 필요한 곳에 붙여넣어 공유하세요.");
+            } catch (err) {
+                console.error('복사 실패', err);
+            }
+            document.body.removeChild(tempInput);
+        }
+    }
+  </script>  
+</body>
+</html>
